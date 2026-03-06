@@ -7,231 +7,186 @@
 <title>Tim Post Services Field App</title>
 
 <style>
-
 body{
-font-family:Arial;
-background:#f3f4f6;
-margin:0;
-padding:15px;
+  font-family: Arial;
+  background: #f3f3f3;
+  margin: 0;
+  padding: 15px;
 }
 
 .header{
-background:#2e7d32;
-color:white;
-padding:15px;
-border-radius:8px;
-text-align:center;
-font-size:20px;
-font-weight:bold;
+  background: #D32F2F; /* Tim Post Red */
+  color: #FFFFFF;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.header img{
+  max-width: 150px;
+  display: block;
+  margin: 0 auto 10px auto;
 }
 
 .container{
-background:white;
-padding:20px;
-margin-top:10px;
-border-radius:10px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  background: #FFFFFF;
+  padding: 20px;
+  margin-top: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 input, textarea{
-width:100%;
-padding:14px;
-margin-top:8px;
-margin-bottom:14px;
-border-radius:6px;
-border:1px solid #ccc;
-font-size:16px;
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  margin-bottom: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
 }
 
 button{
-width:100%;
-padding:16px;
-background:#2e7d32;
-color:white;
-border:none;
-border-radius:6px;
-font-size:16px;
-margin-bottom:10px;
+  width: 100%;
+  padding: 16px;
+  background: #D32F2F;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 
-.secondary{
-background:#555;
+button.secondary{
+  background: #000000;
 }
 
 .lead{
-background:#eef2f3;
-padding:12px;
-border-radius:8px;
-margin-top:10px;
+  background: #FFFFFF;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+  border-left: 4px solid #D32F2F;
 }
 
-img{
-width:100%;
-border-radius:6px;
-margin-top:8px;
+img.lead-photo{
+  width: 100%;
+  border-radius: 6px;
+  margin-top: 8px;
 }
 
 .timestamp{
-font-size:12px;
-color:#666;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 6px;
 }
-
 </style>
-</head>
 
+</head>
 <body>
 
 <div class="header">
-Tim Post Services
-<br>
-Field Lead Capture
+  <!-- Replace the placeholder with your actual logo URL -->
+  <img src="https://via.placeholder.com/150x50?text=Tim+Post+Services+Logo" alt="Tim Post Services Logo">
+  Tim Post Services<br>Field Lead Capture
 </div>
 
 <div class="container">
 
-<input id="name" placeholder="Customer Name">
+  <input id="name" placeholder="Customer Name">
+  <input id="phone" placeholder="Phone">
+  <input id="email" placeholder="Email">
+  <input id="address" placeholder="Property Address">
+  <input id="estimate" placeholder="Estimated Job Value ($)">
+  <input id="gps" placeholder="GPS Coordinates">
 
-<input id="phone" placeholder="Phone">
+  <button onclick="getLocation()">Capture Property GPS</button>
 
-<input id="email" placeholder="Email">
+  <textarea id="notes" placeholder="Project Notes (mulching, clearing, trails, etc)"></textarea>
 
-<input id="address" placeholder="Property Address">
+  <input type="file" accept="image/*" capture="environment" id="photo">
 
-<input id="estimate" placeholder="Estimated Job Value ($)">
-
-<input id="gps" placeholder="GPS Coordinates">
-
-<button onclick="getLocation()">Capture Property GPS</button>
-
-<textarea id="notes" placeholder="Project Notes (mulching, clearing, trails, etc)"></textarea>
-
-<input type="file" accept="image/*" capture="environment" id="photo">
-
-<button onclick="saveLead()">Save Lead</button>
-
-<button class="secondary" onclick="exportLeads()">Export Leads</button>
+  <button onclick="saveLead()">Save Lead</button>
+  <button class="secondary" onclick="exportLeads()">Export Leads</button>
 
 </div>
 
 <div class="container">
-
-<h3>Saved Leads</h3>
-
-<div id="leadList"></div>
-
+  <h3>Saved Leads</h3>
+  <div id="leadList"></div>
 </div>
 
 <script>
-
 let leads = JSON.parse(localStorage.getItem("timpost_leads")) || [];
 
 function saveLead(){
-
-let photoInput = document.getElementById("photo");
-
-let reader = new FileReader();
-
-reader.onload = function(){
-
-let lead = {
-
-name:document.getElementById("name").value,
-phone:document.getElementById("phone").value,
-email:document.getElementById("email").value,
-address:document.getElementById("address").value,
-estimate:document.getElementById("estimate").value,
-gps:document.getElementById("gps").value,
-notes:document.getElementById("notes").value,
-photo:reader.result,
-time:new Date().toLocaleString()
-
-};
-
-leads.push(lead);
-
-localStorage.setItem("timpost_leads", JSON.stringify(leads));
-
-displayLeads();
-
-document.querySelectorAll("input,textarea").forEach(e=>e.value="");
-
-};
-
-if(photoInput.files[0]){
-reader.readAsDataURL(photoInput.files[0]);
-}else{
-reader.onload();
-}
-
+  let photoInput = document.getElementById("photo");
+  let reader = new FileReader();
+  
+  reader.onload = function(){
+    let lead = {
+      name: document.getElementById("name").value,
+      phone: document.getElementById("phone").value,
+      email: document.getElementById("email").value,
+      address: document.getElementById("address").value,
+      estimate: document.getElementById("estimate").value,
+      gps: document.getElementById("gps").value,
+      notes: document.getElementById("notes").value,
+      photo: reader.result,
+      time: new Date().toLocaleString()
+    };
+    leads.push(lead);
+    localStorage.setItem("timpost_leads", JSON.stringify(leads));
+    displayLeads();
+    document.querySelectorAll("input,textarea").forEach(e=>e.value="");
+  };
+  
+  if(photoInput.files[0]){
+    reader.readAsDataURL(photoInput.files[0]);
+  } else {
+    reader.onload();
+  }
 }
 
 function displayLeads(){
-
-let html="";
-
-leads.forEach(l=>{
-
-html+=`<div class="lead">
-
-<b>${l.name}</b><br>
-
-<a href="tel:${l.phone}">${l.phone}</a><br>
-
-${l.address}<br>
-
-Estimate: $${l.estimate}<br>
-
-${l.gps}<br>
-
-<div class="timestamp">${l.time}</div>
-
-${l.notes}
-
-${l.photo ? `<img src="${l.photo}">` : ""}
-
-</div>`;
-
-});
-
-document.getElementById("leadList").innerHTML = html;
-
+  let html = "";
+  leads.forEach(l=>{
+    html += `<div class="lead">
+      <b>${l.name}</b><br>
+      <a href="tel:${l.phone}">${l.phone}</a><br>
+      ${l.address}<br>
+      Estimate: $${l.estimate}<br>
+      ${l.gps}<br>
+      <div class="timestamp">${l.time}</div>
+      ${l.notes}
+      ${l.photo ? `<img class="lead-photo" src="${l.photo}">` : ""}
+    </div>`;
+  });
+  document.getElementById("leadList").innerHTML = html;
 }
 
 function exportLeads(){
-
-let csv="Name,Phone,Email,Address,Estimate,GPS,Notes,Date\n";
-
-leads.forEach(l=>{
-
-csv+=`${l.name},${l.phone},${l.email},${l.address},${l.estimate},${l.gps},${l.notes},${l.time}\n`;
-
-});
-
-let blob = new Blob([csv]);
-
-let a = document.createElement("a");
-
-a.href = URL.createObjectURL(blob);
-
-a.download="tim-post-leads.csv";
-
-a.click();
-
+  let csv = "Name,Phone,Email,Address,Estimate,GPS,Notes,Date\n";
+  leads.forEach(l=>{
+    csv += `${l.name},${l.phone},${l.email},${l.address},${l.estimate},${l.gps},${l.notes},${l.time}\n`;
+  });
+  let blob = new Blob([csv]);
+  let a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "tim-post-leads.csv";
+  a.click();
 }
 
 function getLocation(){
-
-navigator.geolocation.getCurrentPosition(function(position){
-
-document.getElementById("gps").value =
-position.coords.latitude + "," + position.coords.longitude;
-
-});
-
+  navigator.geolocation.getCurrentPosition(function(position){
+    document.getElementById("gps").value =
+      position.coords.latitude + "," + position.coords.longitude;
+  });
 }
 
 displayLeads();
-
 </script>
 
 </body>
