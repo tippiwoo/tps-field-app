@@ -110,6 +110,7 @@ img.lead-photo{
 
   <button onclick="saveLead()">Save Lead</button>
   <button class="secondary" onclick="exportLeads()">Export Leads</button>
+  <button class="secondary" onclick="clearLeads()">Clear All Leads</button>
 
 </div>
 
@@ -177,6 +178,14 @@ function exportLeads(){
   a.href = URL.createObjectURL(blob);
   a.download = "tim-post-leads.csv";
   a.click();
+}
+
+function clearLeads(){
+  if(confirm("Are you sure you want to delete all saved leads?")){
+    leads = [];
+    localStorage.removeItem("timpost_leads");
+    displayLeads();
+  }
 }
 
 function getLocation(){
